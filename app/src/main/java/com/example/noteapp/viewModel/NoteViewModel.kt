@@ -27,7 +27,11 @@ class NoteViewModel(private val notesDao: NotesDao, application: Application): A
     private suspend fun getNotesFromDatabase(): MutableList<Note> {
         lateinit var notes: MutableList<Note>
         withContext(Dispatchers.IO){
-            notes = notesDao.getNotes().value as MutableList<Note>
+            notes = try{
+                notesDao.getNotes().value as MutableList<Note>
+            } catch(e:NullPointerException){
+                mutableListOf()
+            }
         }
         return notes
     }

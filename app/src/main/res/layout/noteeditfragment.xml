@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="2dp">
+    android:padding="2dp"
+    android:background="@color/white">
     <EditText
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -33,6 +34,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="20dp"/>
+        android:layout_margin="20dp"
+        app:srcCompat="@drawable/ic_baseline_save"
+        app:backgroundTint="@color/black"
+        app:tint="@color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
