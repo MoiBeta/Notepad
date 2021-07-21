@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="2dp"
-    android:background="@color/white">
+    android:background="@color/black">
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
@@ -14,7 +14,9 @@
         android:text="Title"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_margin="2dp"/>
+        android:textColor="@color/black"
+        android:layout_margin="2dp"
+        android:background="@color/white"/>
 
     <TextView
         android:id="@+id/content"
@@ -26,6 +28,8 @@
         android:text="Title"
         android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_margin="2dp"/>
+        android:textColor="@color/black"
+        android:layout_margin="2dp"
+        android:background="@color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
