@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.noteapp.databinding.ActivityMainBinding
 import com.example.noteapp.viewModel.NoteViewModel
 import com.example.noteapp.viewModel.NoteViewModelFactory
 

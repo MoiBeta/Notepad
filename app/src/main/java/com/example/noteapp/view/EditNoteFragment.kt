@@ -27,6 +27,7 @@ class EditNoteFragment: Fragment() {
         val fragmentBinding = NoteeditfragmentBinding.inflate(inflater, container, false)
         binding = fragmentBinding
         noteViewModel = ViewModelProvider(this.requireActivity()).get(NoteViewModel::class.java)
+        binding!!.viewModel = noteViewModel
         return fragmentBinding.root
     }
 
@@ -37,12 +38,15 @@ class EditNoteFragment: Fragment() {
         binding?.apply {
             title.setText(noteViewModel.currentNote.name)
             content.setText(noteViewModel.currentNote.content)
-            button.setOnClickListener {
+            lifecycleOwner = viewLifecycleOwner
+        }
+        noteViewModel.navigateToFragment.observe(viewLifecycleOwner,{
+            if (it==0){
                 noteViewModel.setNoteNameAndContent(binding?.title?.text.toString(), binding?.content?.text.toString())
                 noteViewModel.saveNote()
                 findNavController().navigate(R.id.action_editNoteFragment_to_listFragment)
             }
-        }
+        })
     }
 
     override fun onDestroyView() {

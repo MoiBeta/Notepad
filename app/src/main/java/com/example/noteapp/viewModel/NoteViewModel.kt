@@ -10,31 +10,20 @@ import kotlin.collections.mutableListOf as mutableListOf
 
 class NoteViewModel(private val notesDao: NotesDao, application: Application): AndroidViewModel(application) {
     private var _notesList: MutableLiveData<MutableList<Note>> = MutableLiveData(mutableListOf())
-    val notesList: LiveData<MutableList<Note>> get() = _notesList
+    val notesList get() = _notesList
+
     private var _currentNote: Note
     val currentNote get() = _currentNote
+
+    private var _navigateToFragment = MutableLiveData<Int>()
+    val navigateToFragment get() = _navigateToFragment
+
     init{
+        _navigateToFragment.value = 0
         _currentNote = Note(-1,"","", false)
-        setNotes()
         }
 
-    private fun setNotes(){
-        viewModelScope.launch {
-            _notesList.value = getNotesFromDatabase()
-        }
-    }
-
-    private suspend fun getNotesFromDatabase(): MutableList<Note> {
-        lateinit var notes: MutableList<Note>
-        withContext(Dispatchers.IO){
-            notes = try{
-                notesDao.getNotes().value as MutableList<Note>
-            } catch(e:NullPointerException){
-                mutableListOf()
-            }
-        }
-        return notes
-    }
+    fun setNoteList(notes: MutableList<Note>){ _notesList.value = notes }
 
     fun setWorkingNote(id: Int){
         _currentNote = _notesList.value!![id]
@@ -76,10 +65,16 @@ class NoteViewModel(private val notesDao: NotesDao, application: Application): A
         _currentNote.content = content
     }
 
-    fun deleteNote(id: Int){
+    fun deleteNote(note: Note){
         viewModelScope.launch{
-            removeNoteToDatabase(_notesList.value!![id])
-            _notesList.value!!.removeAt(id)
+            removeNoteFromDatabase(_notesList.value!![note.id])
+        }
+    }
+
+    fun changeFav(note: Note){
+        _notesList.value!![note.id].fav = !_notesList.value!![note.id].fav
+        viewModelScope.launch {
+            updateNoteOnDatabase(_notesList.value!![note.id])
         }
     }
 
@@ -99,7 +94,7 @@ class NoteViewModel(private val notesDao: NotesDao, application: Application): A
         }
     }
 
-    private suspend fun removeNoteToDatabase(note: Note){
+    private suspend fun removeNoteFromDatabase(note: Note){
         withContext(Dispatchers.IO){ notesDao.delete(note) }
     }
 
@@ -109,5 +104,19 @@ class NoteViewModel(private val notesDao: NotesDao, application: Application): A
         } else {
             Note(0,"", "",false)
         }
+        _navigateToFragment.value = 2
+    }
+
+    fun onNoteClicked(note: Note){
+        setWorkingNote(note.id)
+        _navigateToFragment.value = 1
+    }
+
+    fun onNoteEditRequest(){
+        _navigateToFragment.value = 2
+    }
+
+    fun onNoteSaved(){
+        _navigateToFragment.value = 0
     }
 }

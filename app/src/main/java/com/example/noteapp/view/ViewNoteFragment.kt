@@ -5,14 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.noteapp.*
 import com.example.noteapp.databinding.NoteviewfragmentBinding
 import com.example.noteapp.model.Note
 import com.example.noteapp.viewModel.NoteViewModel
-import com.example.noteapp.viewModel.NoteViewModelFactory
 
 class ViewNoteFragment: Fragment() {
     private var binding: NoteviewfragmentBinding? = null
@@ -27,6 +26,7 @@ class ViewNoteFragment: Fragment() {
         val fragmentBinding = NoteviewfragmentBinding.inflate(inflater, container, false)
         binding = fragmentBinding
         noteViewModel = ViewModelProvider(this.requireActivity()).get(NoteViewModel::class.java)
+        binding!!.noteViewModel = noteViewModel
         return fragmentBinding.root
     }
 
@@ -35,12 +35,16 @@ class ViewNoteFragment: Fragment() {
 
         currentNote = noteViewModel.currentNote
         binding?.apply{
-            title.text = noteViewModel.currentNote.name
-            content.text = noteViewModel.currentNote.content
+            title.text = noteViewModel?.currentNote?.name
+            content.text = noteViewModel?.currentNote?.content
+            lifecycleOwner = viewLifecycleOwner
         }
-        binding?.root?.setOnClickListener {
-            findNavController().navigate(R.id.action_viewNoteFragment_to_editNoteFragment)
-        }
+
+        noteViewModel.navigateToFragment.observe(viewLifecycleOwner, Observer {
+            if(it == 2){
+                findNavController().navigate(R.id.action_viewNoteFragment_to_editNoteFragment)
+            }
+        })
     }
 
 
